@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 
-// import axios from "axios";
+import { Modal, Button } from "react-bootstrap";
 
 import Todo from "./Todo";
 
@@ -105,6 +105,16 @@ function App() {
     setTodos(newTodo);
   };
 
+  const editTodo = (id: any, name: string) => {
+    const newTodo = todos.slice();
+
+    // edit todo from array by id
+    const index = newTodo.findIndex((todo: { id: any }) => todo.id == id);
+    newTodo[index] = { ...newTodo[index], name: name };
+
+    setTodos(newTodo);
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -156,9 +166,10 @@ function App() {
             return (
               <Todo
                 key={key}
-                // id={todo._id}
+                id={item.id}
                 name={item.name}
                 completed={item.completed}
+                editTodo={editTodo}
                 deleteTodo={() => deleteTodo(item.id)}
                 toggleCompleted={() => toggleCompleted(item.id)}
                 // deleteClick={handleDelete}
@@ -176,6 +187,23 @@ function App() {
           )}
         </div>
       </div>
+
+      {/* <Modal show={true} onHide={() => {}}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input type="text" className="form-control" />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => {}}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={() => {}}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
     </div>
   );
 }

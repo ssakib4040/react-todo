@@ -1,23 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import axios from "axios";
 
 import { Modal, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 function Todo(props: any) {
-  const [showDeleteModal, setShowEditModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
-  const handleClose = () => setShowEditModal(false);
-  const handleShow = () => setShowEditModal(true);
+  const [todoInput, setTodoInput] = React.useState("");
+
+  useEffect(() => {
+    setTodoInput(props.name);
+  }, []);
+
+  const handleClose = () => setShowDeleteModal(false);
+  const handleShow = () => setShowDeleteModal(true);
 
   const handleDeleteModal = async (e: any) => {
     handleShow();
-    // console.log(props);
-
-    // await axios.delete(`/api/todos/delete/${props.id}`);
 
     props.deleteTodo(props.id);
     handleClose();
+  };
+
+  const handleEditModal = async (e: any) => {
+    // setShowEditModal(true);
+
+    props.editTodo(props.id, todoInput);
+    setShowEditModal(false);
+    // console.log("working");
+    // console.log(e);
   };
 
   return (
@@ -32,12 +44,14 @@ function Todo(props: any) {
           >
             {props.name}
           </p>
-          <Link
-            to={`/edit/${props.id}`}
-            className="btn btn-sm btn-outline-primary"
+
+          <button
+            className="btn btn-sm btn-outline-primary m-1"
+            onClick={() => setShowEditModal(true)}
           >
             Edit
-          </Link>
+          </button>
+
           <button
             className="btn btn-sm btn-outline-danger  m-1"
             onClick={handleShow}
@@ -54,6 +68,29 @@ function Todo(props: any) {
           />
         </div>
       </div>
+
+      {/* Edit Modal */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input
+            type="text"
+            className="form-control"
+            value={todoInput}
+            onChange={(e) => setTodoInput(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleEditModal}>
+            Edit
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Modal */}
       <Modal show={showDeleteModal} onHide={handleClose}>
